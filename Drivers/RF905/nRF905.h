@@ -196,6 +196,9 @@ void nRF905_init(struct nRF905_dev *nRF905);
 
 void nRF905_writeConfig (struct nRF905_dev *nRF905);
 
+
+void nRF905_HwConfig(void);
+
 /**
 * Set frequency, workout the channel from the frequency
 *
@@ -207,7 +210,6 @@ void nRF905_writeConfig (struct nRF905_dev *nRF905);
 * @param [freq] Frequency in Hz
 * @return (none)
 */
-void nRF905_HwConfig(void);
 
 void nRF905_setFrequency(nRF905_band_t band, uint32_t freq);
 
@@ -226,7 +228,7 @@ void nRF905_setChannel(struct nRF905_dev *nRF905, nRF905_band_t band, uint16_t c
 * @param [val] Enable/disable auto retransmit
 * @return (none)
 */
-void nRF905_setAutoRetransmit(nRF905_auto_retran_t val);
+void nRF905_setAutoRetransmit(struct nRF905_dev *nRF905, nRF905_auto_retran_t nRF905_auto_retran);
 
 /**
 * Set low power receive
@@ -234,7 +236,7 @@ void nRF905_setAutoRetransmit(nRF905_auto_retran_t val);
 * @param [val] Enable/disable low power receive
 * @return (none)
 */
-void nRF905_setLowRxPower(nRF905_low_rx_t val);
+void nRF905_setLowRxPower(struct nRF905_dev *nRF905, nRF905_low_rx_t nRF905_low_rx);
 
 /**
 * Set output power
@@ -242,7 +244,16 @@ void nRF905_setLowRxPower(nRF905_low_rx_t val);
 * @param [val] Output power level
 * @return (none)
 */
-void nRF905_setTransmitPower(nRF905_pwr_t val);
+void nRF905_setTransmitPower(struct nRF905_dev *nRF905, nRF905_pwr_t nRF905_pwr);
+
+/**
+* Payload size
+*
+* @param [size] Payload size (1 - 32)
+* @return (none)
+*/
+void nRF905_setRxPayloadSize(struct nRF905_dev *nRF905, uint8_t size);
+void nRF905_setTxPayloadSize(struct nRF905_dev *nRF905, uint8_t size);
 
 /**
 * Set CRC
@@ -260,21 +271,14 @@ void nRF905_setCRC(nRF905_crc_t val);
 */
 void nRF905_setClockOut(nRF905_outclk_t val);
 
-/**
-* Payload size
-*
-* @param [size] Payload size (1 - 32)
-* @return (none)
-*/
-void nRF905_setPayloadSize(uint8_t size);
-
 //**
 //* Address size
 //*
 //* @param [size] Address size
 //* @return (none)
 //*/
-//void nRF905_setAddressSize(nRF905_addr_size_t size);
+void nRF905_setTxAddressSize(struct nRF905_dev *nRF905, nRF905_addr_size_t size);
+void nRF905_setRxAddressSize(struct nRF905_dev *nRF905, nRF905_addr_size_t size);
 
 /**
 * Destination radio address
@@ -282,15 +286,16 @@ void nRF905_setPayloadSize(uint8_t size);
 * @param [address] The address (usually a byte array of 1 or 4 bytes depending on NRF905_ADDR_SIZE)
 * @return (none)
 */
-void nRF905_setTXAddress(void* address);
+void nRF905_setTXAddress(struct nRF905_dev *nRF905, uint32_t *address);
 
+uint32_t nRF905_getTXAddress(struct nRF905_dev *nRF905);
 /**
 * Address of this radio
 *
 * @param [address] The address (usually a byte array of 1 or 4 bytes depending on NRF905_ADDR_SIZE)
 * @return (none)
 */
-void nRF905_setRXAddress(void* address);
+void nRF905_setRXAddress(struct nRF905_dev *nRF905, uint32_t *address);
 
 /**
 * Set payload data
@@ -409,7 +414,7 @@ inline void nRF905_interrupt_on(void)
 * @return (none)
 */
 void nRF905_getConfigRegisters(struct nRF905_dev *nRF905);
-
+uint32_t swapAddr (uint32_t addr);
 void nRF905_startShockBurstRx (void);
 void nRF905_sendData (struct nRF905_dev *nRF905, uint8_t *pTxData, uint16_t Size);
 

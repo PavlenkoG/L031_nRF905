@@ -41,8 +41,14 @@ void main (void) {
 
 
     nRF905_init(&nRF905dev);
+//  nRF905_getConfigRegisters(&nRF905dev);
+    nRF905_setChannel(&nRF905dev,NRF905_BAND_868, 0x75);
+    nRF905_setRxAddressSize(&nRF905dev,NRF905_ADDR_SIZE_4);
+    uint32_t rxAddr = 0x12345678;
+    nRF905_setRXAddress(&nRF905dev,&rxAddr);
     nRF905_getConfigRegisters(&nRF905dev);
-    nRF905_setChannel(0x75);
+    nRF905_setTXAddress(&nRF905dev,&rxAddr);
+    rxAddr = nRF905_getTXAddress(&nRF905dev);
 //  nRF905_writeConfig(&nRF905dev);
 
 //  nRF905_powerUp();

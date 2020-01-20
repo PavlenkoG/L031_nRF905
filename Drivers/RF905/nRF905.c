@@ -92,30 +92,126 @@ void nRF905_writeConfig (struct nRF905_dev *nRF905) {
 
 	uint8_t cmd = NRF905_CMD_W_CONFIG;
 	nRF905->write (&cmd,nRF905->config,10);
-
 }
 
 void nRF905_setChannel(struct nRF905_dev *nRF905, nRF905_band_t band, uint16_t channel) {
-	uint8_t cmdW = NRF905_CMD_W_CONFIG;
+	uint8_t cmdW = NRF905_CMD_W_CONFIG | NRF905_REG_CHANNEL;
 	uint8_t cmdR = NRF905_CMD_R_CONFIG | NRF905_REG_CHANNEL;
 	uint8_t tempReg[2] = {0,0};
 	nRF905->read (&cmdR,tempReg,2);
 
 	tempReg[0] = (uint8_t) channel;
-	tempReg[1] &= 0xFC;
+	tempReg[1] &= NRF905_CHANNEL_MSK;
 	tempReg[1] |= (uint8_t)(channel >> 8);
+	tempReg[1] |= (uint8_t)band;
 
-	/*
-	nRF905_getConfigRegisters(nRF905);
-	nRF905->config[0] = (uint8_t) channel;
-	nRF905->config[1] &= 0xFC;
-
-	nRF905->config[1] |= (uint8_t)(channel >> 8);
-	nRF905->config[1] |= (uint8_t)band;
-	*/
 	nRF905->write (&cmdW,tempReg,2);
 }
 
+void nRF905_setAutoRetransmit(struct nRF905_dev *nRF905, nRF905_auto_retran_t nRF905_auto_retran) {
+	uint8_t cmdW = NRF905_CMD_W_CONFIG | NRF905_REG_AUTO_RETRAN;
+	uint8_t cmdR = NRF905_CMD_R_CONFIG | NRF905_REG_AUTO_RETRAN;
+	uint8_t tempReg = 0;
+
+	nRF905->read (&cmdR,&tempReg,1);
+
+	tempReg &= NRF905_AUTO_RETRAN_MSK;
+	tempReg |= nRF905_auto_retran;
+
+	nRF905->write (&cmdW,&tempReg,1);
+}
+
+void nRF905_setLowRxPower(struct nRF905_dev *nRF905, nRF905_low_rx_t nRF905_low_rx) {
+	uint8_t cmdW = NRF905_CMD_W_CONFIG | NRF905_REG_PWR;
+	uint8_t cmdR = NRF905_CMD_R_CONFIG | NRF905_REG_PWR;
+	uint8_t tempReg = 0;
+
+	nRF905->read (&cmdR,&tempReg,1);
+
+	tempReg &= NRF905_LOW_RX_MSK;
+	tempReg |= nRF905_low_rx;
+
+	nRF905->write (&cmdW,&tempReg,1);
+}
+
+void nRF905_setTransmitPower(struct nRF905_dev *nRF905, nRF905_pwr_t nRF905_pwr) {
+	uint8_t cmdW = NRF905_CMD_W_CONFIG | NRF905_REG_PWR;
+	uint8_t cmdR = NRF905_CMD_R_CONFIG | NRF905_REG_PWR;
+	uint8_t tempReg = 0;
+
+	nRF905->read (&cmdR,&tempReg,1);
+
+	tempReg &= NRF905_PA_PWR_MSK;
+	tempReg |= nRF905_pwr;
+
+	nRF905->write (&cmdW,&tempReg,1);
+}
+
+void nRF905_setRxPayloadSize(struct nRF905_dev *nRF905, uint8_t size) {
+	uint8_t cmdW = NRF905_CMD_W_CONFIG | NRF905_REG_RX_PAYLOAD_SIZE;
+
+	if (size > 0 && size <= 32)
+		nRF905->write (&cmdW,&size,1);
+}
+
+void nRF905_setTxPayloadSize(struct nRF905_dev *nRF905, uint8_t size) {
+	uint8_t cmdW = NRF905_CMD_W_CONFIG | NRF905_REG_TX_PAYLOAD_SIZE;
+
+	if (size > 0 && size <= 32)
+		nRF905->write (&cmdW,&size,1);
+}
+
+void nRF905_setRxAddressSize(struct nRF905_dev *nRF905, nRF905_addr_size_t nRF905_addr_size) {
+	uint8_t cmdW = NRF905_CMD_W_CONFIG | NRF905_REG_ADDR_WIDTH;
+	uint8_t cmdR = NRF905_CMD_R_CONFIG | NRF905_REG_ADDR_WIDTH;
+	uint8_t tempReg = 0;
+
+	nRF905->read (&cmdR,&tempReg,1);
+
+	tempReg &= NRF905_RX_ADDR_WDT_MSK;
+	tempReg |= nRF905_addr_size;
+
+	nRF905->write (&cmdW,&tempReg,1);
+}
+void nRF905_setTxAddressSize(struct nRF905_dev *nRF905, nRF905_addr_size_t nRF905_addr_size) {
+	uint8_t cmdW = NRF905_CMD_W_CONFIG | NRF905_REG_ADDR_WIDTH;
+	uint8_t cmdR = NRF905_CMD_R_CONFIG | NRF905_REG_ADDR_WIDTH;
+	uint8_t tempReg = 0;
+
+	nRF905->read (&cmdR,&tempReg,1);
+
+	tempReg &= NRF905_TX_ADDR_WDT_MSK;
+	tempReg |= (nRF905_addr_size << 4);
+
+	nRF905->write (&cmdW,&tempReg,1);
+}
+
+void nRF905_setTXAddress(struct nRF905_dev *nRF905, uint32_t *address) {
+	uint8_t cmdW = NRF905_CMD_W_TX_ADDRESS;
+	uint32_t swappedAddr = swapAddr(*address);
+
+	nRF905->write (&cmdW,&swappedAddr,4);
+}
+void nRF905_setRXAddress(struct nRF905_dev *nRF905, uint32_t *address) {
+	uint8_t cmdW = NRF905_CMD_W_CONFIG | NRF905_REG_RX_ADDRESS;
+	uint32_t swappedAddr = swapAddr(*address);
+
+	nRF905->write (&cmdW,&swappedAddr,4);
+}
+
+uint32_t nRF905_getTXAddress(struct nRF905_dev *nRF905){
+	uint32_t txAddr = 0;
+	uint8_t cmdW = NRF905_CMD_R_TX_ADDRESS;
+	nRF905->read (&cmdW,&txAddr,4);
+	return swapAddr(txAddr);
+}
+uint32_t swapAddr (uint32_t addr) {
+	return ((addr>>24)&0xff) |
+						   ((addr<<8)&0xff0000) |
+	                       ((addr>>8)&0xff00) |
+	                       ((addr<<24)&0xff000000);
+
+}
 void nRF905_powerUp(void) {
 	HAL_GPIO_WritePin(nRF905_PWR_PORT, nRF905_PWR, GPIO_PIN_SET);
 }
