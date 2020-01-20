@@ -4,8 +4,8 @@ Function | Port | CN3 Pin |-| CN4 Pin |Port| Function
 ----------|------|-----------|-|----------|----|----------
 USART1_TX|PA9|1|-|1|VIN|-
 UART1_RX|PA10|2|-|2|GND|-
-- |NRST|3|-|3|RESET|-
-- |GND|4|-|4|+5V|-
+-|NRST|3|-|3|RESET|-
+-|GND|4|-|4|+5V|-
 -|PA12|5|-|5|PA2|DBG_USART_TX
 -|PB0|6|-|6|PA7|-
 -|PB7|7|-|7|PA6|-
