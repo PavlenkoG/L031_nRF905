@@ -205,6 +205,33 @@ uint32_t nRF905_getTXAddress(struct nRF905_dev *nRF905){
 	nRF905->read (&cmdW,&txAddr,4);
 	return swapAddr(txAddr);
 }
+
+void nRF905_setCRC(struct nRF905_dev *nRF905, nRF905_crc_t nRF905_crc) {
+	uint8_t cmdW = NRF905_CMD_W_CONFIG | NRF905_REG_CRC;
+	uint8_t cmdR = NRF905_CMD_R_CONFIG | NRF905_REG_CRC;
+	uint8_t tempReg = 0;
+
+	nRF905->read (&cmdR,&tempReg,1);
+
+	tempReg &= NRF905_CRC_MSK;
+	tempReg |= nRF905_crc;
+
+	nRF905->write (&cmdW,&tempReg,1);
+}
+
+void nRF905_setCrstallOsc(struct nRF905_dev *nRF905, nRF905_xof_freq_t nRF905_xof_freq) {
+	uint8_t cmdW = NRF905_CMD_W_CONFIG | NRF905_REG_CLK;
+	uint8_t cmdR = NRF905_CMD_R_CONFIG | NRF905_REG_CLK;
+	uint8_t tempReg = 0;
+
+	nRF905->read (&cmdR,&tempReg,1);
+
+	tempReg &= NRF905_XOF_MSK;
+	tempReg |= nRF905_xof_freq;
+
+	nRF905->write (&cmdW,&tempReg,1);
+}
+
 uint32_t swapAddr (uint32_t addr) {
 	return ((addr>>24)&0xff) |
 						   ((addr<<8)&0xff0000) |
@@ -212,6 +239,7 @@ uint32_t swapAddr (uint32_t addr) {
 	                       ((addr<<24)&0xff000000);
 
 }
+
 void nRF905_powerUp(void) {
 	HAL_GPIO_WritePin(nRF905_PWR_PORT, nRF905_PWR, GPIO_PIN_SET);
 }
@@ -222,7 +250,7 @@ void nRF905_powerDown(void) {
 
 void nRF905_getConfigRegisters(struct nRF905_dev *nRF905) {
 	uint8_t cmd = NRF905_CMD_R_CONFIG;
-	nRF905->read (&cmd,nRF905->config,11);
+	nRF905->read (&cmd,nRF905->config,10);
 }
 
 void nRF905_startShockBurstRx (void) {

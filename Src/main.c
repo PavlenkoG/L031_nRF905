@@ -43,18 +43,20 @@ void main (void) {
     nRF905_init(&nRF905dev);
 //  nRF905_getConfigRegisters(&nRF905dev);
     nRF905_setChannel(&nRF905dev,NRF905_BAND_868, 0x75);
-    nRF905_setRxAddressSize(&nRF905dev,NRF905_ADDR_SIZE_4);
-    uint32_t rxAddr = 0x12345678;
+    nRF905_setRxAddressSize(&nRF905dev,NRF905_ADDR_SIZE_1);
+    nRF905_setTxAddressSize(&nRF905dev,NRF905_ADDR_SIZE_1);
+    uint32_t rxAddr = 0xF1000000;
     nRF905_setRXAddress(&nRF905dev,&rxAddr);
-    nRF905_getConfigRegisters(&nRF905dev);
     nRF905_setTXAddress(&nRF905dev,&rxAddr);
-    rxAddr = nRF905_getTXAddress(&nRF905dev);
+    nRF905_setRxPayloadSize(&nRF905dev,7);
+    nRF905_setTxPayloadSize(&nRF905dev,7);
+    nRF905_setCRC(&nRF905dev,NRF905_CRC_DISABLE);
+    nRF905_setCrstallOsc(&nRF905dev,NFR905_XOF_16MHZ);
 //  nRF905_writeConfig(&nRF905dev);
 
 //  nRF905_powerUp();
 
     while (1) {
-    	/*
     	tx[6] = cnt;
     	if (cnt < 0x39) {
     		cnt ++;
@@ -62,7 +64,6 @@ void main (void) {
     		cnt = 0x30;
     	}
     	nRF905_sendData(&nRF905dev,&tx[0],sizeof(tx) - 1);
-    	*/
     	HAL_Delay(1000);
     }
 

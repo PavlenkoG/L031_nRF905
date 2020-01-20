@@ -261,7 +261,7 @@ void nRF905_setTxPayloadSize(struct nRF905_dev *nRF905, uint8_t size);
 * @param [val] CRC Type
 * @return (none)
 */
-void nRF905_setCRC(nRF905_crc_t val);
+void nRF905_setCRC(struct nRF905_dev *nRF905, nRF905_crc_t nRF905_crc);
 
 /**
 * Set clock output
@@ -277,6 +277,8 @@ void nRF905_setClockOut(nRF905_outclk_t val);
 //* @param [size] Address size
 //* @return (none)
 //*/
+
+void nRF905_setCrstallOsc(struct nRF905_dev *nRF905, nRF905_xof_freq_t nRF905_xof_freq);
 void nRF905_setTxAddressSize(struct nRF905_dev *nRF905, nRF905_addr_size_t size);
 void nRF905_setRxAddressSize(struct nRF905_dev *nRF905, nRF905_addr_size_t size);
 
