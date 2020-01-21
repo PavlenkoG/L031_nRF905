@@ -17,8 +17,11 @@ void DEBUG_USART_Init (void) {
 	usart2.Init.StopBits = USART_STOPBITS_1;
 	usart2.Init.Mode = USART_MODE_TX_RX;
 	usart2.Init.Parity = USART_PARITY_NONE;
+	usart2.RxXferSize = 0x1;
 
 	HAL_USART_Init(&usart2);
+	HAL_NVIC_SetPriority(USART2_IRQn, 0, 1);
+	HAL_NVIC_EnableIRQ(USART2_IRQn);
 }
 
 void HAL_USART_MspInit(USART_HandleTypeDef *husart) {
@@ -28,7 +31,7 @@ void HAL_USART_MspInit(USART_HandleTypeDef *husart) {
 		__HAL_UART_DBG_GPIO_RCC_ENA;
 		GPIO_InitStruct.Pin = UART_DBG_RX_PIN | UART_DBG_TX_PIN;
 		GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-		GPIO_InitStruct.Pull = GPIO_NOPULL;
+		GPIO_InitStruct.Pull = GPIO_PULLUP;
 		GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
 		GPIO_InitStruct.Alternate = UART_GPIO_AF_PORT;
 

@@ -40,6 +40,7 @@
 #include "stm32f0xx_it.h"
 #include "main.h"
 
+extern USART_HandleTypeDef usart2;
 /** @addtogroup STM32L0xx_HAL_Examples
   * @{
   */
@@ -100,6 +101,11 @@ void SysTick_Handler(void)
   /* USER CODE BEGIN SysTick_IRQn 1 */
 
   /* USER CODE END SysTick_IRQn 1 */
+}
+
+void USART2_IRQHandler(void)
+{
+	HAL_USART_IRQHandler(&usart2);
 }
 /**
   * @brief  This function handles PendSVC exception.
