@@ -10,7 +10,11 @@
 
 #include "main.h"
 
-extern USART_HandleTypeDef usart2;
+#define UART_RX_BUFFER_LEN 30
+
+extern UART_HandleTypeDef usart2;
+extern uint8_t stringReceived;
+
 void DEBUG_USART_Init (void);
 
 

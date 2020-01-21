@@ -40,7 +40,9 @@
 #include "stm32f0xx_it.h"
 #include "main.h"
 
-extern USART_HandleTypeDef usart2;
+extern UART_HandleTypeDef usart2;
+extern uint8_t uartRx[30];
+extern uint8_t stringReceived;
 /** @addtogroup STM32L0xx_HAL_Examples
   * @{
   */
@@ -105,6 +107,19 @@ void SysTick_Handler(void)
 
 void USART2_IRQHandler(void)
 {
+	uint8_t rxData = 0;
+	rxData = usart2.Instance->RDR;
+	if (usart2.RxXferCount < usart2.RxXferSize) {
+		*usart2.pRxBuffPtr = rxData;
+		usart2.pRxBuffPtr ++;
+		usart2.RxXferCount ++;
+	}
+	if (rxData == 0x0d || rxData == 0x0A) {
+		usart2.pRxBuffPtr = &uartRx[0];
+		HAL_UART_Transmit(&usart2, usart2.pRxBuffPtr, usart2.RxXferCount, 0x5000);
+		stringReceived = usart2.RxXferCount;
+		usart2.RxXferCount = 0;
+	}
 	HAL_USART_IRQHandler(&usart2);
 }
 /**

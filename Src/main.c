@@ -1,5 +1,4 @@
 #include "main.h"
-#include "stm32l0xx_hal.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -45,26 +44,32 @@ void main (void) {
     nRF905_getConfigRegisters(&nRF905dev);
     nRF905_printConfig(&nRF905dev);
 
-    __HAL_USART_ENABLE_IT(&usart2,USART_IT_RXNE);
+    __HAL_UART_ENABLE_IT(&usart2,UART_IT_RXNE);
 
     while (1) {
+    	if (stringReceived){
+    		commandHandler(usart2.pRxBuffPtr,stringReceived);
+    		stringReceived = 0;
+    	}
+    	/*
     	tx[6] = cnt;
     	if (cnt < 0x39) {
     		cnt ++;
     	} else {
     		cnt = 0x30;
     	}
+    	*/
 //    	nRF905_sendData(&nRF905dev,&tx[0],sizeof(tx) - 1);
     	HAL_Delay(1000);
     }
 
 }
-
-void HAL_USART_RxCpltCallback(USART_HandleTypeDef *UartHandle)
+/*
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *UartHandle)
 {
-	HAL_Delay(1);
-	//HAL_USART_Transmit(&usart2, UartHandle->pRxBuffPtr, 1, 0xFFFF);
+	HAL_UART_Transmit(&usart2, "a", 1, 0x5000);
 }
+*/
 
 static void SystemClock_Config(void)
 {
@@ -117,7 +122,7 @@ static void Error_Handler(void)
 }
 
 int __io_putchar(int ch) {
-    HAL_USART_Transmit(&usart2, (uint8_t *) &ch, 1, 0x5000);
+    HAL_UART_Transmit(&usart2, (uint8_t *) &ch, 1, 0x5000);
     return ch;
 }
 

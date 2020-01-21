@@ -15,5 +15,6 @@
 #include "usart.h"
 #include "spi.h"
 #include "nRF905.h"
+#include "console.h"
 
 #endif /* INC_MAIN_H_ */
