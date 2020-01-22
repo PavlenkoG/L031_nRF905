@@ -10,7 +10,7 @@
 
 #include "main.h"
 
-#define UART_RX_BUFFER_LEN 30
+#define UART_RX_BUFFER_LEN 255
 
 extern UART_HandleTypeDef usart2;
 extern uint8_t stringReceived;

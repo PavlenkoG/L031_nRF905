@@ -17,4 +17,6 @@
 #include "nRF905.h"
 #include "console.h"
 
+void processUserCommand (struct userCmd_t *userCmd, struct nRF905_dev *nRF905);
+
 #endif /* INC_MAIN_H_ */
