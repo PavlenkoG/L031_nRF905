@@ -20,6 +20,7 @@ const uint8_t writeTxPayload[] =  "txPayloadW";
 const uint8_t readTxPayload[] =   "txPayloadR";
 const uint8_t printCfg[] =        "printConfig";
 const uint8_t startSckBrst[] =    "startTxBrst";
+const uint8_t startRxBrst[] =	  "startRxBrst";
 const uint8_t help[] =            "help";
 
 void commandHandler(struct userCmd_t *usercmd, uint8_t *rxBuffer, uint8_t len) {
@@ -124,6 +125,11 @@ void commandHandler(struct userCmd_t *usercmd, uint8_t *rxBuffer, uint8_t len) {
         commandLen = __CMD_LENGTH(startSckBrst);
         data_present = 0;
         usercmd->command = START_SK_BURST;
+    // start shock burst receiver
+    } else if (!(strncmp((char*) (rxBuffer), startRxBrst, __CMD_LENGTH(startRxBrst)))) {
+        commandLen = __CMD_LENGTH(startRxBrst);
+        data_present = 0;
+        usercmd->command = START_RX_BURST;
     // print config registers
     } else if (!(strncmp((char*) (rxBuffer), printCfg, __CMD_LENGTH(printCfg)))) {
         data_present = 0;
@@ -134,6 +140,7 @@ void commandHandler(struct userCmd_t *usercmd, uint8_t *rxBuffer, uint8_t len) {
         usercmd->command = HELP_CMD;
     //
     } else {
+    	data_present = 0;
         usercmd->command = ERROR_CMD;
     }
 
@@ -194,6 +201,7 @@ void printHelp (void) {
     printf ("%s : write transmit payload\r\n", writeTxPayload);
     printf ("%s : read transmit payload\r\n", readTxPayload);
     printf ("%s : start shock burst transmit\r\n", startSckBrst);
+    printf ("%s : start shock burst receive\r\n", startRxBrst);
 
     printf ("%s : set TX Adress\r\n", setTxAddr);
     printf ("%s : print this help\r\n", help);

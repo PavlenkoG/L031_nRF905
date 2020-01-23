@@ -69,16 +69,12 @@ void nRF905_init(struct nRF905_dev *nRF905) {
     uint i = 0;
     nRF905_HwConfig();
 
-    nRF905_setChannelBand(nRF905, nRF905->nRF905_HandleTypeDef.nRF905_band,
-            nRF905->nRF905_HandleTypeDef.ChannelNum);
+    nRF905_setChannelBand(nRF905, nRF905->nRF905_HandleTypeDef.nRF905_band, nRF905->nRF905_HandleTypeDef.ChannelNum);
     nRF905_setTransmitPower(nRF905, nRF905->nRF905_HandleTypeDef.nRF905_pwr);
     nRF905_setLowRxPower(nRF905, nRF905->nRF905_HandleTypeDef.nRF905_low_rx);
-    nRF905_setAutoRetransmit(nRF905,
-            nRF905->nRF905_HandleTypeDef.nRF905_auto_retran);
-    nRF905_setRxAddressSize(nRF905,
-            nRF905->nRF905_HandleTypeDef.nRF905_rx_addr_size);
-    nRF905_setTxAddressSize(nRF905,
-            nRF905->nRF905_HandleTypeDef.nRF905_tx_addr_size);
+    nRF905_setAutoRetransmit(nRF905, nRF905->nRF905_HandleTypeDef.nRF905_auto_retran);
+    nRF905_setRxAddressSize(nRF905, nRF905->nRF905_HandleTypeDef.nRF905_rx_addr_size);
+    nRF905_setTxAddressSize(nRF905, nRF905->nRF905_HandleTypeDef.nRF905_tx_addr_size);
     nRF905_setRXAddress(nRF905, nRF905->nRF905_HandleTypeDef.nRF905_rx_addr);
     nRF905_setCRC(nRF905, nRF905->nRF905_HandleTypeDef.nRF905_crc);
     nRF905_setClockOut(nRF905, nRF905->nRF905_HandleTypeDef.nRF905_outclk);
@@ -268,12 +264,9 @@ void nRF905_setTxPayloadSize(struct nRF905_dev *nRF905, uint8_t size) {
  */
 void nRF905_setRXAddress(struct nRF905_dev *nRF905, uint32_t address) {
     nRF905_writeConfigRegister(nRF905, NRF905_RX_ADDRESS_0, (uint8_t) address);
-    nRF905_writeConfigRegister(nRF905, NRF905_RX_ADDRESS_1,
-            (uint8_t) (address >> 8));
-    nRF905_writeConfigRegister(nRF905, NRF905_RX_ADDRESS_2,
-            (uint8_t) (address >> 16));
-    nRF905_writeConfigRegister(nRF905, NRF905_RX_ADDRESS_3,
-            (uint8_t) (address >> 24));
+    nRF905_writeConfigRegister(nRF905, NRF905_RX_ADDRESS_1, (uint8_t) (address >> 8));
+    nRF905_writeConfigRegister(nRF905, NRF905_RX_ADDRESS_2, (uint8_t) (address >> 16));
+    nRF905_writeConfigRegister(nRF905, NRF905_RX_ADDRESS_3, (uint8_t) (address >> 24));
 }
 
 /**
@@ -496,7 +489,6 @@ void nRF905_writeConfigRegister(struct nRF905_dev *nRF905,
     tempReg &= msk;
     tempReg |= value;
     nRF905->write(&cmdW, &tempReg, 1);
-    nRF905_getConfigRegisters(nRF905);
 }
 
 void nRF905_startShockBurstRx(struct nRF905_dev *nRF905) {
@@ -555,8 +547,7 @@ void nRF905_getTxPayloadData(struct nRF905_dev *nRF905, uint8_t *pTxData) {
 
 uint8_t nRF905_getData(struct nRF905_dev *nRF905, void *data, uint8_t len) {
     uint8_t cmd = NRF905_CMD_R_RX_PAYLOAD;
-    nRF905->read(&cmd, nRF905->config, len);
+    nRF905->read(&cmd, data, len);
     return 0;
-
 }
 

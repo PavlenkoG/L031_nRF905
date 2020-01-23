@@ -317,8 +317,7 @@ inline void nRF905_interrupt_on(void) {
  */
 void nRF905_getConfigRegisters(struct nRF905_dev *nRF905);
 void nRF905_printConfig(struct nRF905_dev *nRF905);
-void nRF905_writeConfigRegister(struct nRF905_dev *nRF905, uint8_t reg,
-        uint8_t value);
+void nRF905_writeConfigRegister(struct nRF905_dev *nRF905, uint8_t reg, uint8_t value);
 void nRF905_startShockBurstRx(struct nRF905_dev *nRF905);
 void nRF905_startShcokBurstTx(struct nRF905_dev *nRF905);
 void nRF905_stopShockBurstTx(struct nRF905_dev *nRF905);

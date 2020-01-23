@@ -102,9 +102,20 @@ void SysTick_Handler(void) {
 }
 
 void EXTI4_15_IRQHandler(void) {
+
     HAL_GPIO_EXTI_IRQHandler(nRF905_DR);
-    if (nRF905dev.nRF905_radio_state == NRF905_RADIO_STATE_TX) {
-        nRF905_stopShockBurstTx(nRF905_DR);
+    HAL_GPIO_EXTI_IRQHandler(nRF905_CD);
+    HAL_GPIO_EXTI_IRQHandler(nRF905_AM);
+    if (__HAL_GPIO_EXTI_GET_IT(nRF905_DR)){
+		if (nRF905dev.nRF905_radio_state == NRF905_RADIO_STATE_TX) {
+			nRF905_stopShockBurstTx(nRF905_DR);
+			HAL_NVIC_DisableIRQ(EXTI4_15_IRQn);
+		}
+		if (nRF905dev.nRF905_radio_state == NRF905_RADIO_STATE_RX) {
+			nRF905_BurstRxHandler(nRF905_DR);
+		}
+    } else {
+        HAL_NVIC_EnableIRQ(EXTI4_15_IRQn);
     }
 }
 

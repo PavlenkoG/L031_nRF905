@@ -23,6 +23,7 @@
 #define PRINT_CONFIG 0x11
 #define SET_REGISTER 0x12
 #define START_SK_BURST 0x13
+#define START_RX_BURST 0x14
 #define HELP_CMD 0x20
 #define ERROR_CMD 0xFF
 #define __CMD_LENGTH(__CMD__) ((sizeof(__CMD__)-1)/sizeof(uint8_t))

@@ -24,7 +24,6 @@ void DEBUG_USART_Init(void) {
     usart2.pRxBuffPtr = &uartRx[0];
     usart2.RxXferSize = UART_RX_BUFFER_LEN;
     usart2.RxXferCount = 0;
-//  usart2.RxCpltCallback = HAL_USART_RxCpltCallback;
 
     HAL_UART_Init(&usart2);
     HAL_NVIC_SetPriority(USART2_IRQn, 0, 1);
