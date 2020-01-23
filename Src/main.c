@@ -28,15 +28,15 @@ void main(void) {
     nRF905dev.nRF905_HandleTypeDef.nRF905_pwr = NRF905_PWR_n10;
     nRF905dev.nRF905_HandleTypeDef.nRF905_low_rx = NRF905_LOW_RX_DISABLE;
     nRF905dev.nRF905_HandleTypeDef.nRF905_auto_retran = NRF905_AUTO_RETRAN_DISABLE;
-    nRF905dev.nRF905_HandleTypeDef.nRF905_rx_addr_size = NRF905_ADDR_SIZE_4;
-    nRF905dev.nRF905_HandleTypeDef.nRF905_tx_addr_size = NRF905_ADDR_SIZE_4;
+    nRF905dev.nRF905_HandleTypeDef.nRF905_rx_addr_size = NRF905_ADDR_SIZE_3;
+    nRF905dev.nRF905_HandleTypeDef.nRF905_tx_addr_size = NRF905_ADDR_SIZE_3;
     nRF905dev.nRF905_HandleTypeDef.nRF905_rx_pw = 7;
     nRF905dev.nRF905_HandleTypeDef.nRF905_tx_pw = 7;
-    nRF905dev.nRF905_HandleTypeDef.nRF905_rx_addr = 0x31fab6e7;
+    nRF905dev.nRF905_HandleTypeDef.nRF905_rx_addr = 0x0031fab6;
     nRF905dev.nRF905_HandleTypeDef.nRF905_outclk = NRF905_OUTCLK_DISABLE;
     nRF905dev.nRF905_HandleTypeDef.nRF905_xof_freq = NFR905_XOF_16MHZ;
-    nRF905dev.nRF905_HandleTypeDef.nRF905_crc = NRF905_CRC_16;
-    nRF905dev.nRF905_HandleTypeDef.nRF905_tx_addr = 0x12345678;
+    nRF905dev.nRF905_HandleTypeDef.nRF905_crc = NRF905_CRC_DISABLE;
+    nRF905dev.nRF905_HandleTypeDef.nRF905_tx_addr = 0x0031fab6;
 
     nRF905dev.read = nRF905_Read;
     nRF905dev.write = nRF905_Write;
@@ -233,6 +233,7 @@ void nRF905_BurstRxHandler(struct nRF905_dev *nRF905) {
 	uint8_t rxCnt = 0;
 	uint8_t i = 0;
 	rxCnt = nRF905_getData(nRF905,&rxBuffer[0],0);
+	printf("Received packet: ");
 	if (rxCnt) {
 		for (rxCnt;rxCnt >0;rxCnt--){
             printf("0x%x ", rxBuffer[i]);

@@ -75,6 +75,8 @@ void nRF905_init(struct nRF905_dev *nRF905) {
     nRF905_setAutoRetransmit(nRF905, nRF905->nRF905_HandleTypeDef.nRF905_auto_retran);
     nRF905_setRxAddressSize(nRF905, nRF905->nRF905_HandleTypeDef.nRF905_rx_addr_size);
     nRF905_setTxAddressSize(nRF905, nRF905->nRF905_HandleTypeDef.nRF905_tx_addr_size);
+    nRF905_setRxPayloadSize(nRF905,nRF905->nRF905_HandleTypeDef.nRF905_rx_pw);
+    nRF905_setTxPayloadSize(nRF905,nRF905->nRF905_HandleTypeDef.nRF905_tx_pw);
     nRF905_setRXAddress(nRF905, nRF905->nRF905_HandleTypeDef.nRF905_rx_addr);
     nRF905_setCRC(nRF905, nRF905->nRF905_HandleTypeDef.nRF905_crc);
     nRF905_setClockOut(nRF905, nRF905->nRF905_HandleTypeDef.nRF905_outclk);
@@ -386,8 +388,7 @@ void nRF905_printConfig(struct nRF905_dev *nRF905) {
      */
 }
 
-void nRF905_writeConfigRegister(struct nRF905_dev *nRF905,
-        nRF905_registers_t nRF905_reg, uint8_t value) {
+void nRF905_writeConfigRegister(struct nRF905_dev *nRF905, nRF905_registers_t nRF905_reg, uint8_t value) {
     uint8_t cmdR = NRF905_CMD_R_CONFIG;
     uint8_t cmdW = NRF905_CMD_W_CONFIG;
     uint8_t tempReg = 0;
@@ -496,7 +497,7 @@ void nRF905_startShockBurstRx(struct nRF905_dev *nRF905) {
     HAL_GPIO_WritePin(nRF905_TXEN_PORT, nRF905_TXEN, GPIO_PIN_RESET);
     HAL_GPIO_WritePin(nRF905_TRXCE_PORT, nRF905_TRXCE, GPIO_PIN_SET);
     nRF905->nRF905_radio_state = NRF905_RADIO_STATE_RX;
-	HAL_NVIC_EnableIRQ(EXTI4_15_IRQn);
+    HAL_NVIC_EnableIRQ(EXTI4_15_IRQn);
 }
 
 void nRF905_startShcokBurstTx(struct nRF905_dev *nRF905) {
@@ -545,9 +546,8 @@ void nRF905_getTxPayloadData(struct nRF905_dev *nRF905, uint8_t *pTxData) {
     nRF905->read(&cmd, pTxData, nRF905->nRF905_HandleTypeDef.nRF905_tx_pw);
 }
 
-uint8_t nRF905_getData(struct nRF905_dev *nRF905, void *data, uint8_t len) {
+uint8_t nRF905_getData(struct nRF905_dev *nRF905, uint8_t *data, uint8_t len) {
     uint8_t cmd = NRF905_CMD_R_RX_PAYLOAD;
-    nRF905->read(&cmd, data, len);
-    return 0;
+    return nRF905->read(&cmd, data, len);
 }
 

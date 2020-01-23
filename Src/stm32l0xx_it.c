@@ -103,19 +103,21 @@ void SysTick_Handler(void) {
 
 void EXTI4_15_IRQHandler(void) {
 
-    HAL_GPIO_EXTI_IRQHandler(nRF905_DR);
-    HAL_GPIO_EXTI_IRQHandler(nRF905_CD);
-    HAL_GPIO_EXTI_IRQHandler(nRF905_AM);
     if (__HAL_GPIO_EXTI_GET_IT(nRF905_DR)){
 		if (nRF905dev.nRF905_radio_state == NRF905_RADIO_STATE_TX) {
-			nRF905_stopShockBurstTx(nRF905_DR);
+			nRF905_stopShockBurstTx(&nRF905dev);
 			HAL_NVIC_DisableIRQ(EXTI4_15_IRQn);
 		}
 		if (nRF905dev.nRF905_radio_state == NRF905_RADIO_STATE_RX) {
-			nRF905_BurstRxHandler(nRF905_DR);
+			nRF905_BurstRxHandler(&nRF905dev);
 		}
-    } else {
-        HAL_NVIC_EnableIRQ(EXTI4_15_IRQn);
+        HAL_GPIO_EXTI_IRQHandler(nRF905_DR);
+    }
+    if(__HAL_GPIO_EXTI_GET_IT(nRF905_CD)){
+        HAL_GPIO_EXTI_IRQHandler(nRF905_CD);
+    }
+    if(__HAL_GPIO_EXTI_GET_IT(nRF905_AM)){
+        HAL_GPIO_EXTI_IRQHandler(nRF905_AM);
     }
 }
 
@@ -123,8 +125,6 @@ void USART2_IRQHandler(void) {
     uint8_t rxData = 0;
     rxData = usart2.Instance->RDR;
     usart2.Instance->TDR = rxData;
-    if (rxData == 0x0d)
-        usart2.Instance->TDR = 0x0a;
 
     if (usart2.RxXferCount < usart2.RxXferSize) {
         *usart2.pRxBuffPtr = rxData;
@@ -135,6 +135,7 @@ void USART2_IRQHandler(void) {
         usart2.pRxBuffPtr = &uartRx[0];
         stringReceived = usart2.RxXferCount;
         usart2.RxXferCount = 0;
+        usart2.Instance->TDR = 0x0a;
     }
     HAL_USART_IRQHandler(&usart2);
     __HAL_UART_ENABLE_IT(&usart2, UART_IT_RXNE);

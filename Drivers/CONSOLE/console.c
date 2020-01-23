@@ -196,7 +196,7 @@ void printHelp (void) {
     printf ("%s : set RX payload length \r\n", setTxLen);
     printf ("%s : set output clock 0/4/5/6/7 - disable/4MHz/2MHz/1MHz/500KHz \r\n", setUpClk);
     printf ("%s : set oscillator frequency 0/0x8/0x10/0x18/0x20 (4/8/12/16/20MHz)\r\n", setXOF);
-    printf ("%s : set CRC 0/0x40/0xc0 (disable/8bit/16bit)\r\n", setXOF);
+    printf ("%s : set CRC 0/0x40/0xc0 (disable/8bit/16bit)\r\n", setCRC);
     printf ("%s : print nRF905 configuration registers\r\n", printCfg);
     printf ("%s : write transmit payload\r\n", writeTxPayload);
     printf ("%s : read transmit payload\r\n", readTxPayload);

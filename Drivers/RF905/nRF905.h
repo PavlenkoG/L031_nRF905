@@ -242,7 +242,7 @@ void nRF905_receive(void);
  * @param [len] How many bytes to copy
  * @return false if no data available, otherwise true
  */
-uint8_t nRF905_getData(struct nRF905_dev *nRF905, void *data, uint8_t len);
+uint8_t nRF905_getData(struct nRF905_dev *nRF905, uint8_t *data, uint8_t len);
 
 /**
  * Wake up into standby mode.
