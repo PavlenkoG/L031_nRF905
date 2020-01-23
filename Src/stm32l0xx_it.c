@@ -124,18 +124,30 @@ void EXTI4_15_IRQHandler(void) {
 void USART2_IRQHandler(void) {
     uint8_t rxData = 0;
     rxData = usart2.Instance->RDR;
-    usart2.Instance->TDR = rxData;
 
-    if (usart2.RxXferCount < usart2.RxXferSize) {
-        *usart2.pRxBuffPtr = rxData;
-        usart2.pRxBuffPtr++;
-        usart2.RxXferCount++;
-    }
-    if (rxData == 0x0d || rxData == 0x0A) {
-        usart2.pRxBuffPtr = &uartRx[0];
-        stringReceived = usart2.RxXferCount;
-        usart2.RxXferCount = 0;
-        usart2.Instance->TDR = 0x0a;
+    if (rxData == 0x08) {
+        usart2.Instance->TDR = 0x8;
+        while (!(usart2.Instance->ISR & USART_ISR_TXE)){}
+        usart2.Instance->TDR = 0x7f;
+        while (!(usart2.Instance->ISR & USART_ISR_TXE)){}
+        usart2.Instance->TDR = 0x8;
+        if (usart2.RxXferCount) {
+            usart2.pRxBuffPtr--;
+            usart2.RxXferCount--;
+        }
+    } else {
+        usart2.Instance->TDR = rxData;
+        if (usart2.RxXferCount < usart2.RxXferSize) {
+            *usart2.pRxBuffPtr = rxData;
+            usart2.pRxBuffPtr++;
+            usart2.RxXferCount++;
+        }
+        if (rxData == 0x0d || rxData == 0x0A) {
+            usart2.pRxBuffPtr = &uartRx[0];
+            stringReceived = usart2.RxXferCount;
+            usart2.RxXferCount = 0;
+            usart2.Instance->TDR = 0x0a;
+        }
     }
     HAL_USART_IRQHandler(&usart2);
     __HAL_UART_ENABLE_IT(&usart2, UART_IT_RXNE);
